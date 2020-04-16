@@ -148,12 +148,13 @@ def xpath_to_json(configs, last_xpath="", payload={}):
             # --|                      |---config
             #   |---this xpath config
             payload = combine_configs(payload, last_xpath, cfg)
-            return xpath_to_json(configs[i:], xpath, payload)
+            continue
         xpath_segs = xpath.split("/")
         xpath_segs.reverse()
         for seg in xpath_segs:
             if not seg:
                 continue
+            seg = re.sub(RE_FIND_KEYS, "", seg)
             if payload:
                 if is_key:
                     if seg in payload:
