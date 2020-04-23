@@ -261,8 +261,10 @@ def get_payload(configs):
             is_key = False
             prepend_path = ""
             xpath, config = seg
-            end_path = xpath[len(common_xpath) :]
-            if end_path.startswith("["):
+            end_path = xpath[len(common_xpath):]
+            if not end_path:
+                prepend_path = common_xpath
+            elif end_path.startswith("["):
                 # Don't start payload with a list
                 tmp = common_xpath.split("/")
                 prepend_path = "/" + tmp.pop()
@@ -280,10 +282,15 @@ def get_payload(configs):
         compressed_updates.append(update)
 
     updates = []
-    for update in compressed_updates:
-        common_xpath, cfgs = update
-        payload = xpath_to_json(cfgs)
-        updates.append((common_xpath, json.dumps(payload).encode("utf-8")))
+    if len(compressed_updates) == 1:
+        common_xpath, cfg = compressed_updates[0]
+        xpath, payload, is_key = cfg[0]
+        updates.append((xpath, json.dumps(payload).encode("utf-8")))
+    else:
+        for update in compressed_updates:
+            common_xpath, cfgs = update
+            payload = xpath_to_json(cfgs)
+            updates.append((common_xpath, json.dumps(payload).encode("utf-8")))
     return updates
 
 
