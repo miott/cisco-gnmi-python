@@ -31,4 +31,4 @@ from .xe import XEClient
 from .builder import ClientBuilder
 from . import xpath_util
 
-__version__ = "1.0.4"
+__version__ = "1.2.0"
